@@ -16,7 +16,7 @@ logger.add(logger.transports.Console, {
 logger.level = "debug";
 // Initialise the bot
 var bot = new Discord.Client({
-	token: auth.token,
+	token: process.env.token || auth.token,
 	autorun: true
 });
 
