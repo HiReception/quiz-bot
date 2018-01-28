@@ -13,7 +13,7 @@
   "scripts": {
     "compile": "babel --presets es2015 -d lib/ src/",
     "prepublish": "npm run compile",
-    "postinstall": "npm run compile",
+    "postinstall": "npm run compile"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.24.1"
