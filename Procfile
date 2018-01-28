@@ -1,1 +1,1 @@
-web: node lib/bot.js
+worker: node lib/bot.js
