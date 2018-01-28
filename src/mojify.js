@@ -5,11 +5,11 @@ export default function (line) {
 		if (char === " ") {
 			return " ";
 		} else if (char === "-") {
-			return "\:white_large_square:";
+			return ":white_large_square:";
 		} else if ("0123456789".includes(char)) {
-			return "\:" + number_words[parseInt(char)] + ":";
+			return ":" + number_words[parseInt(char)] + ":";
 		} else {
-			return "\:regional_indicator_" + char.toLowerCase() + ":";
+			return ":regional_indicator_" + char.toLowerCase() + ":";
 		}
 	}).join("");
 }

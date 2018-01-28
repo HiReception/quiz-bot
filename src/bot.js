@@ -14,6 +14,12 @@ logger.add(logger.transports.Console, {
 
 
 logger.level = "debug";
+
+if (process.env.token) {
+	logger.info("Using Heroku token: " + process.env.token);
+} else {
+	logger.info("Using Local token: " + auth.token);
+}
 // Initialise the bot
 var bot = new Discord.Client({
 	token: process.env.token || auth.token,
@@ -24,6 +30,12 @@ bot.on("ready", function(evt) {
 	logger.info("Connected");
 	logger.info("Logged in as: ");
 	logger.info(bot.username + " - (" + bot.id + ")");
+});
+
+bot.on("disconnect", function(err, code) {
+	logger.info("Disconnect");
+	logger.info(err);
+	logger.info(code);
 });
 
 
