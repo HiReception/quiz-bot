@@ -14,6 +14,7 @@
 	"scripts": {
 		"compile": "babel --presets es2015 -d lib/ src/",
 		"prepublish": "npm run compile",
-		"postinstall": "npm run compile"
+		"postinstall": "npm run compile",
+		"start": "node lib/bot.js"
 	}
 }
