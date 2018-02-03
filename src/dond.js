@@ -65,6 +65,10 @@ export default class DealOrNoDealGame {
 		}
 	}
 
+	getUserID() {
+		return this.userID;
+	}
+
 	gameHandler(user, userID, channelID, message, evt) {
 		const caseSelectRegex = /^.*\[([0-9]+)\].*$/;
 		const offerRegex = /^.*\[([DN])\].*$/;
@@ -274,6 +278,6 @@ export default class DealOrNoDealGame {
 	}
 
 	endGame() {
-		this.endGameCallback();
+		this.endGameCallback(this.channelID);
 	}
 }

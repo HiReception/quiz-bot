@@ -6,6 +6,8 @@ export default function (line) {
 			return " ";
 		} else if (char === "-") {
 			return ":white_large_square:";
+		} else if (char === "_") {
+			return ":stop_button:";
 		} else if ("0123456789".includes(char)) {
 			return ":" + number_words[parseInt(char)] + ":";
 		} else {
