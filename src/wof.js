@@ -1,32 +1,109 @@
 var logger = require("winston");
-import mojify from "./mojify";
 
 logger.remove(logger.transports.Console);
 logger.add(logger.transports.Console, {
 	colorize: true
 });
 
-/* States of game:
-	Pre-selection
-	Round 1
-	Offer 1
-	Round 2
-	Offer 2
-	...
-	Round 9
-	Offer 9
-	Open chosen case
-
-*/
-
 const maxIncorrect = 5;
 
 const puzzles = [
-	{answer: "TEST PUZZLE ONE",		category: "PHRASE", board: ["------------","TEST-PUZZLE-","----ONE-----","------------"]},
-	{answer: "TEST PUZZLE TWO",		category: "PHRASE", board: ["------------","TEST-PUZZLE-","----TWO-----","------------"]},
-	{answer: "TEST PUZZLE THREE",	category: "PHRASE", board: ["------------","TEST-PUZZLE-","---THREE----","------------"]},
-	{answer: "TEST PUZZLE FOUR",	category: "PHRASE", board: ["------------","TEST-PUZZLE-","----FOUR----","------------"]},
-	{answer: "TEST PUZZLE FIVE",	category: "PHRASE", board: ["------------","TEST-PUZZLE-","----FIVE----","------------"]},
+	{answer: "ANIMAL RESCUE",					category: "PHRASE", 			board: ["            ","   ANIMAL   ","   RESCUE   ","            "]},
+	{answer: "ENGLISH BREAKFAST TEA",			category: "FOOD & DRINK", 		board: ["  ENGLISH   "," BREAKFAST  ","    TEA     ","            "]},
+	{answer: "CRUSHED ICE",						category: "FOOD & DRINK", 		board: ["            ","CRUSHED ICE ","            ","            "]},
+	{answer: "APPLE TART",						category: "FOOD & DRINK", 		board: ["            "," APPLE TART ","            ","            "]},
+	{answer: "HAIL TO THE CHIEF",				category: "TITLE", 				board: ["            ","HAIL TO THE ","   CHIEF    ","            "]},
+	{answer: "BANJO PLAYER",					category: "OCCUPATION", 		board: ["            ","BANJO PLAYER","            ","            "]},
+	{answer: "GENUINE LEATHER TRIM",			category: "THING", 				board: ["            ","  GENUINE   ","LEATHER TRIM","            "]},
+	{answer: "KENNEDY CENTER HONOREES",			category: "PEOPLE", 			board: ["  KENNEDY   ","   CENTER   ","  HONOREES  ","            "]},
+	{answer: "CLINICALLY TESTED",				category: "PHRASE", 			board: ["            "," CLINICALLY ","   TESTED   ","            "]},
+	{answer: "MONUMENT VALLEY",					category: "ON THE MAP", 		board: ["            ","  MONUMENT  ","   VALLEY   ","            "]},
+	{answer: "SLEEPLESS IN SEATTLE",			category: "TITLE", 				board: ["            ","SLEEPLESS IN","  SEATTLE   ","            "]},
+	{answer: "BUSINESS CARD HOLDER",			category: "THING", 				board: ["            ","  BUSINESS  ","CARD HOLDER ","            "]},
+	{answer: "EASTERN STANDARD TIME",			category: "THING", 				board: ["  EASTERN   ","  STANDARD  ","    TIME    ","            "]},
+	{answer: "GREEN WITH ENVY",					category: "PHRASE", 			board: ["            "," GREEN WITH ","    ENVY    ","            "]},
+	{answer: "LIGHTHOUSE",						category: "THING", 				board: ["            "," LIGHTHOUSE ","            ","            "]},
+	{answer: "PARCHMENT PAPER",					category: "THING", 				board: ["            "," PARCHMENT  ","   PAPER    ","            "]},
+	{answer: "RIGHTFUL OWNER",					category: "PERSON", 			board: ["            ","  RIGHTFUL  ","   OWNER    ","            "]},
+	{answer: "ROW ROW ROW YOUR BOAT",			category: "TITLE", 				board: ["            ","ROW ROW ROW "," YOUR BOAT  ","            "]},
+	{answer: "CASPER WYOMING",					category: "ON THE MAP", 		board: ["            ","   CASPER   ","  WYOMING   ","            "]},
+	{answer: "ATTENTION SHOPPERS",				category: "PHRASE", 			board: ["            "," ATTENTION  ","  SHOPPERS  ","            "]},
+	{answer: "RUNS BATTED IN",					category: "THINGS", 			board: ["            ","RUNS BATTED ","     IN     ","            "]},
+	{answer: "BAY LEAVES & ROSEMARY",			category: "FOOD & DRINK", 		board: ["            "," BAY LEAVES "," & ROSEMARY ","            "]},
+	{answer: "EARS OF CORN",					category: "FOOD & DRINK", 		board: ["            ","EARS OF CORN","            ","            "]},
+	{answer: "MARRIED NAME",					category: "THING", 				board: ["            ","MARRIED NAME","            ","            "]},
+	{answer: "COVER MODEL",						category: "PERSON", 			board: ["            ","COVER MODEL ","            ","            "]},
+	{answer: "EXOTIC BEACHES",					category: "PLACES", 			board: ["            ","   EXOTIC   ","  BEACHES   ","            "]},
+	{answer: "HUDSON RIVER",					category: "ON THE MAP", 		board: ["            ","HUDSON RIVER","            ","            "]},
+	{answer: "BROWN RECLUSE SPIDER",			category: "ANIMAL", 			board: ["   BROWN    ","  RECLUSE   ","   SPIDER   ","            "]},
+	{answer: "NEW ORLEANS LOUISIANA",			category: "ON THE MAP", 		board: ["            ","NEW ORLEANS "," LOUISIANA  ","            "]},
+	{answer: "OVEN FRIED CHICKEN",				category: "FOOD & DRINK", 		board: ["            "," OVEN FRIED ","  CHICKEN   ","            "]},
+	{answer: "COFFEE & TEA STAINS",				category: "THINGS", 			board: ["            ","COFFEE & TEA","   STAINS   ","            "]},
+	{answer: "HASTE MAKES WASTE",				category: "PHRASE", 			board: ["            ","HASTE MAKES ","   WASTE    ","            "]},
+	{answer: "ATHENS GREECE",					category: "ON THE MAP", 		board: ["            ","   ATHENS   ","   GREECE   ","            "]},
+	{answer: "BOSTON LEGAL",					category: "TITLE", 				board: ["            ","BOSTON LEGAL","            ","            "]},
+	{answer: "FALLING STAR",					category: "THING", 				board: ["            ","FALLING STAR","            ","            "]},
+	{answer: "RECORDING SESSION",				category: "THING", 				board: ["            "," RECORDING  ","  SESSION   ","            "]},
+	{answer: "MY NAME IS EARL",					category: "TITLE", 				board: ["            "," MY NAME IS ","    EARL    ","            "]},
+	{answer: "GUEST COTTAGE",					category: "PLACE", 				board: ["            ","   GUEST    ","  COTTAGE   ","            "]},
+	{answer: "BY HOOK OR BY CROOK",				category: "PHRASE", 			board: ["            "," BY HOOK OR ","  BY CROOK  ","            "]},
+	{answer: "DOUBLE STUF OREOS",				category: "FOOD & DRINK", 		board: ["            ","DOUBLE STUF ","   OREOS    ","            "]},
+	{answer: "HONOLULU HAWAII",					category: "ON THE MAP", 		board: ["            ","  HONOLULU  ","   HAWAII   ","            "]},
+	{answer: "LAS VEGAS NEVADA",				category: "ON THE MAP", 		board: ["            "," LAS VEGAS  ","   NEVADA   ","            "]},
+	{answer: "OLD NEWSPAPERS",					category: "THINGS", 			board: ["            ","    OLD     "," NEWSPAPERS ","            "]},
+	{answer: "POLITICAL SATIRE",				category: "THING", 				board: ["            "," POLITICAL  ","   SATIRE   ","            "]},
+	{answer: "GAS & WATER PUMP",				category: "THING", 				board: ["            ","GAS & WATER ","    PUMP    ","            "]},
+	{answer: "ASPIRING ACTOR",					category: "OCCUPATION", 		board: ["            ","  ASPIRING  ","   ACTOR    ","            "]},
+	{answer: "DEMOCRATIC PARTY",				category: "TITLE", 				board: ["            "," DEMOCRATIC ","   PARTY    ","            "]},
+	{answer: "MOVIE TRAILER HITCH",				category: "BEFORE & AFTER", 	board: ["   MOVIE    ","  TRAILER   ","   HITCH    ","            "]},
+	{answer: "NO SHOES NO SHIRT NO SERVICE",	category: "PHRASE", 			board: ["  NO SHOES  ","  NO SHIRT  "," NO SERVICE ","            "]},
+	{answer: "BACKYARD BARBECUE",				category: "EVENT", 				board: ["            ","  BACKYARD  ","  BARBECUE  ","            "]},
+	{answer: "GREAT WHITE PELICAN",				category: "ANIMAL", 			board: ["            ","GREAT WHITE ","  PELICAN   ","            "]},
+	{answer: "JEWELRY CABINET",					category: "AROUND THE HOUSE", 	board: ["            ","  JEWELRY   ","  CABINET   ","            "]},
+	{answer: "ROADSIDE FAMILY DINER",			category: "PLACE", 				board: ["            ","  ROADSIDE  ","FAMILY DINER","            "]},
+	{answer: "SCRAPBOOK",						category: "THING", 				board: ["            "," SCRAPBOOK  ","            ","            "]},
+	{answer: "BEEN THERE DONE THAT",			category: "PHRASE", 			board: ["            "," BEEN THERE "," DONE THAT  ","            "]},
+	{answer: "BRANSON MISSOURI",				category: "ON THE MAP", 		board: ["            ","  BRANSON   ","  MISSOURI  ","            "]},
+	{answer: "GAME OF CARDS",					category: "THING", 				board: ["            ","  GAME OF   ","   CARDS    ","            "]},
+	{answer: "PAR FOR THE COURSE",				category: "PHRASE", 			board: ["            ","PAR FOR THE ","   COURSE   ","            "]},
+	{answer: "PRACTICAL ATTIRE",				category: "THING", 				board: ["            "," PRACTICAL  ","   ATTIRE   ","            "]},
+	{answer: "BIRTHDAY PARTY",					category: "EVENT", 				board: ["            ","  BIRTHDAY  ","   PARTY    ","            "]},
+	{answer: "DOG WAGGING ITS TAIL",			category: "PHRASE", 			board: ["            ","DOG WAGGING ","  ITS TAIL  ","            "]},
+	{answer: "HIGH SCHOOL",						category: "PLACE", 				board: ["            ","HIGH SCHOOL ","            ","            "]},
+	{answer: "JAMBALAYA",						category: "FOOD & DRINK", 		board: ["            "," JAMBALAYA  ","            ","            "]},
+	{answer: "REAR BUMPER CROP",				category: "BEFORE & AFTER", 	board: ["            ","REAR BUMPER ","    CROP    ","            "]},
+	{answer: "BURNED TO A CRISP",				category: "PHRASE", 			board: ["            ","BURNED TO A ","   CRISP    ","            "]},
+	{answer: "PERSONAL SPACE CASE",				category: "BEFORE & AFTER", 	board: ["            ","  PERSONAL  "," SPACE CASE ","            "]},
+	{answer: "RARE QUALITIES",					category: "PHRASE", 			board: ["            ","    RARE    "," QUALITIES  ","            "]},
+	{answer: "CELEBRITY JOURNALIST",			category: "OCCUPATION", 		board: ["            "," CELEBRITY  "," JOURNALIST ","            "]},
+	{answer: "RELIEF PITCHER",					category: "OCCUPATION", 		board: ["            ","   RELIEF   ","  PITCHER   ","            "]},
+	{answer: "BENJAMIN FRANKLIN",				category: "PROPER NAME", 		board: ["            ","  BENJAMIN  ","  FRANKLIN  ","            "]},
+	{answer: "INSPIRING LECTURE",				category: "EVENT", 				board: ["            "," INSPIRING  ","  LECTURE   ","            "]},
+	{answer: "PEACH COBBLER",					category: "FOOD & DRINK", 		board: ["            ","   PEACH    ","  COBBLER   ","            "]},
+	{answer: "PLASTIC FORKS",					category: "THINGS", 			board: ["            ","  PLASTIC   ","   FORKS    ","            "]},
+	{answer: "SHARP AS A TACK",					category: "PHRASE", 			board: ["            "," SHARP AS A ","    TACK    ","            "]},
+	{answer: "CUSTOMER SERVICE AWARD",			category: "THING", 				board: ["  CUSTOMER  ","  SERVICE   ","   AWARD    ","            "]},
+	{answer: "RENTAL CAR",						category: "THING", 				board: ["            "," RENTAL CAR ","            ","            "]},
+	{answer: "SECRET BALLOT",					category: "PHRASE", 			board: ["            ","   SECRET   ","   BALLOT   ","            "]},
+	{answer: "SHAGGY & SCOOBY-DOO",				category: "CHARACTERS",			board: ["            ","  SHAGGY &  "," SCOOBY-DOO ","            "]},
+	{answer: "SHOW SOME RESPECT",				category: "PHRASE", 			board: ["            "," SHOW SOME  ","  RESPECT   ","            "]},
+	{answer: "BEANS & CORNBREAD",				category: "FOOD & DRINK", 		board: ["            ","  BEANS &   "," CORNBREAD  ","            "]},
+	{answer: "SIGHT UNSEEN",					category: "PHRASE", 			board: ["            ","SIGHT UNSEEN","            ","            "]},
+	{answer: "CIVIL CEREMONY",					category: "EVENT", 				board: ["            ","   CIVIL    ","  CEREMONY  ","            "]},
+	{answer: "HOMEMADE DINNER ROLLS",			category: "FOOD & DRINK", 		board: ["            ","  HOMEMADE  ","DINNER ROLLS","            "]},
+	{answer: "LEGENDARY FILMMAKER",				category: "OCCUPATION", 		board: ["            "," LEGENDARY  "," FILMMAKER  ","            "]},
+	{answer: "COMIC ACTOR JACK BLACK",			category: "PROPER NAME", 		board: ["            ","COMIC ACTOR "," JACK BLACK ","            "]},
+	{answer: "DEAD RINGER",						category: "PHRASE", 			board: ["            ","DEAD RINGER ","            ","            "]},
+	{answer: "GOLDEN GATE BRIDGE",				category: "ON THE MAP", 		board: ["            ","GOLDEN GATE ","   BRIDGE   ","            "]},
+	{answer: "PERMISSION GRANTED",				category: "PHRASE", 			board: ["            "," PERMISSION ","  GRANTED   ","            "]},
+	{answer: "PLEASE TAKE YOUR SEATS",			category: "PHRASE", 			board: ["            ","PLEASE TAKE "," YOUR SEATS ","            "]},
+	{answer: "COMMON PHEASANT",					category: "ANIMAL", 			board: ["            ","   COMMON   ","  PHEASANT  ","            "]},
+	{answer: "DESSERT BOWL",					category: "AROUND THE HOUSE", 	board: ["            ","DESSERT BOWL","            ","            "]},
+	{answer: "EIFFEL TOWER",					category: "ON THE MAP", 		board: ["            ","EIFFEL TOWER","            ","            "]},
+	{answer: "MOTORCYCLE GANG",					category: "THING", 				board: ["            "," MOTORCYCLE ","    GANG    ","            "]},
+	{answer: "MUSHROOM RISOTTO",				category: "FOOD & DRINK",		board: ["            ","  MUSHROOM  ","  RISOTTO   ","            "]},
+	{answer: "CONNECTING FLIGHT",				category: "THING", 				board: ["            "," CONNECTING ","   FLIGHT   ","            "]},
+	{answer: "ONE-LINERS & ZINGERS",			category: "THINGS", 			board: ["            "," ONE-LINERS "," & ZINGERS  ","            "]},
 ];
 
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -88,7 +165,7 @@ export default class WheelOfFortuneGame {
 						response = response.concat(this.handleLoss());
 						this.endGame();
 					} else {
-						// TODO print the board again
+						// print the board again
 						response = response.concat(`${this.printPuzzleBoard()}\n${this.printCategory()}\n${this.promptForGuess()}`);
 					}
 				}
@@ -133,9 +210,9 @@ export default class WheelOfFortuneGame {
 	}
 
 	printPuzzleBoard(fullyRevealed = false) {
-		return this.puzzle.board.map((line) => {
-			return mojify(Array.prototype.map.call(line, (c) => (letters.includes(c) && !this.calledLetters.some((l) => l === c) && !fullyRevealed) ? "_" : c).join(""));
-		}).join("\n");
+		return `\`\`\`${this.puzzle.board.map((line) => {
+			return Array.prototype.map.call(line, (c) => (letters.includes(c) && !this.calledLetters.some((l) => l === c) && !fullyRevealed) ? "_" : c).join("");
+		}).join("\n")}\`\`\``;
 	}
 
 	printCategory() {
