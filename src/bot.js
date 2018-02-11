@@ -80,6 +80,7 @@ bot.on("message", (user, userID, channelID, message, evt) => {
 					"Currently, I can play:\n\n" +
 					"- **wof**: Wheel of Fortune - You against the board, Hangman style. Pick a letter, or try and solve. Five mistakes, and you're done!\n" + 
 					"- **dond**: Deal or No Deal - the classic game of strategy, tactics, and... picking random numbers. The Australian rules are in play, because of developer biases. :flag_au:\n" + 
+					"\nFor more information, to add me to your own server, or to complain when I go pear-shaped, go to https://github.com/HiReception/quiz-bot." +
 					"\nHave fun!"
 			});
 			break;
